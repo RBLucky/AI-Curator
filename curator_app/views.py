@@ -68,3 +68,22 @@ def tool_detail_view(request, pk):
         'explanation': explanation,
     }
     return render(request, 'curator_app/tool_detail.html', context)
+
+def trigger_fetch_news_view(request, secret):
+    """
+    A secure view to trigger the fetch_news management command.
+    """
+    # Ensure valid credentials
+    if secret != os.environ.get('CRON_SECRET'):
+        # If they don't match - 'Forbidden' error
+        return HttpResponseForbidden('Invalid secret.')
+
+    try:
+        print("Cron job triggered: Fetching news...")
+        call_command('fetch_news')
+        print("Cron job finished successfully.")
+        return HttpResponse('News fetch command triggered successfully.')
+    except Exception as e:
+        # Log errors and throw error response
+        print(f"Error running fetch_news command via cron: {e}")
+        return HttpResponse(f'Error triggering command: {e}', status=500)
