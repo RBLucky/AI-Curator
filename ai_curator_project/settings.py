@@ -1,4 +1,3 @@
-# ai_curator_project/ai_curator_project/settings.py
 """
 Django settings for ai_curator_project project.
 """
@@ -8,7 +7,6 @@ from dotenv import load_dotenv
 import dj_database_url
 
 # --- Initial Setup ---
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
@@ -16,12 +14,8 @@ load_dotenv()
 
 
 # --- Security and Deployment Settings ---
-# SECRET_KEY is loaded from the .env file for local development,
-# and from Render's environment variables in production.
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# DEBUG is True locally, but will be False in production on Render.
-# Render sets the 'RENDER' environment variable.
 DEBUG = 'RENDER' not in os.environ
 
 # Defines which hostnames are allowed to serve the site.
@@ -51,8 +45,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Add Whitenoise middleware for serving static files.
-    # It should be placed right after the SecurityMiddleware.
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,8 +77,8 @@ WSGI_APPLICATION = 'ai_curator_project.wsgi.application'
 
 # --- Database Configuration ---
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-# This configuration uses the PostgreSQL database provided by Render in production,
-# but falls back to the local SQLite database for development.
+# PostgreSQL database provided by Render in production,
+# SQLite database locally for development.
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -119,9 +111,7 @@ STATIC_URL = '/static/'
 
 # Following settings only need to be configured for production (when DEBUG is False)
 if not DEBUG:
-    # Tell Django to collect static files into this directory.
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Enable the Whitenoise storage backend to compress static files.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
