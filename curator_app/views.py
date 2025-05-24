@@ -48,19 +48,19 @@ def tool_detail_view(request, pk):
     View to display details for a single AI tool and handle AI explanation requests.
     """
     tool = get_object_or_404(AiTool, pk=pk)
-    explanation = None # Initialize explanation as None
+    explanation = None
 
-    # This part handles the form submission when the user clicks the "Ask AI" button
+    # Form submission when user clicks "Ask AI" button
     if request.method == 'POST':
-        query = tool.perplexity_query # We use the query stored on our tool model
+        query = tool.perplexity_query
         if query:
-            # Call our verified ai_client function to get the explanation
+            # Call ai_client function to get AI response
             explanation = get_explanation(query)
         else:
             explanation = "No specific query is configured for this tool in the admin panel."
 
     context = {
         'tool': tool,
-        'explanation': explanation, # Pass the explanation (or None) to the template
+        'explanation': explanation,
     }
     return render(request, 'curator_app/tool_detail.html', context)
