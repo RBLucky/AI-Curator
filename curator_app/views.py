@@ -4,6 +4,10 @@ from .models import NewsItem, AiTool, Category
 # Gemini client function
 from .ai_client import get_explanation
 
+import os
+from django.http import HttpResponse, HttpResponseForbidden
+from django.core.management import call_command
+
 
 # Better views than Cape Town
 
