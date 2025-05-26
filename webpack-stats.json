@@ -1,0 +1,21 @@
+{
+  "status": "done",
+  "assets": {
+    "bundle.js": {
+      "name": "bundle.js",
+      "path": "C:\\Users\\NungoTshidzumba\\AI-Curator\\frontend\\static\\frontend\\bundle.js",
+      "publicPath": "/static/frontend/bundle.js"
+    },
+    "bundle.js.map": {
+      "name": "bundle.js.map",
+      "path": "C:\\Users\\NungoTshidzumba\\AI-Curator\\frontend\\static\\frontend\\bundle.js.map",
+      "publicPath": "/static/frontend/bundle.js.map"
+    }
+  },
+  "chunks": {
+    "main": [
+      "bundle.js"
+    ]
+  },
+  "publicPath": "/static/frontend/"
+}

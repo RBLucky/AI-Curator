@@ -117,10 +117,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = '/static/'
 
+# Always set STATIC_ROOT (needed for collectstatic)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Tell Django where to find additional static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'static',  # Our React build files
+]
+
 # Following settings only need to be configured for production (when DEBUG is False)
 if not DEBUG:
-    # Tell Django to collect static files into this directory.
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # Enable the Whitenoise storage backend to compress static files.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
