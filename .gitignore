@@ -1,5 +1,12 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+ai_curator_project/__pycache__/
+curator_app/__pycache__/
+ai_curator_project/__pycache__/wsgi.cpython-313.pyc
+ai_curator_project/__pycache__/urls.cpython-313.pyc
+ai_curator_project/__pycache__/__init__.cpython-313.pyc
+curator_app/__init__.cpython-313.pyc
+curator_app/0001_initial.cpython-313.pyc
+curator_app/migrations/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -175,7 +182,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-node_modules/
-node_modules*
-*node_modules
