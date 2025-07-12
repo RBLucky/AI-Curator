@@ -1,4 +1,5 @@
 annotated-types==0.7.0
+beautifulsoup4==4.12.3
 asgiref==3.8.1
 cachetools==5.5.2
 certifi==2025.4.26
@@ -6,6 +7,9 @@ charset-normalizer==3.4.2
 colorama==0.4.6
 dj-database-url==2.3.0
 Django==5.2.1
+django-bootstrap5==24.2
+django-cors-headers
+djangorestframework
 feedparser==6.0.11
 google-ai-generativelanguage==0.6.4
 google-api-core==2.25.0rc1

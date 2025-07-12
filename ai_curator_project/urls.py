@@ -20,6 +20,5 @@ from curator_app import views as curator_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('', curator_views.home_view, name='home'),
-     path('', include('curator_app.urls')),
+    path('', include('curator_app.urls')),
 ]
