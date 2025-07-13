@@ -84,7 +84,9 @@ WSGI_APPLICATION = 'ai_curator_project.wsgi.application'
 # SQLite database locally for development.
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
+        # Gets the DATABASE_URL from the environment variables provided by Render.
+        # Defaults to a local SQLite database if the URL is not found.
+        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
         conn_max_age=600
     )
 }
