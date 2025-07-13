@@ -1,64 +1,57 @@
+# curator_app/management/commands/fetch_news.py
+
 import feedparser
-from dateutil import parser as date_parser
+from dateutil import parser
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from curator_app.models import NewsSource, NewsItem, Category
 
 class Command(BaseCommand):
-    help = 'Fetches new news items from all registered RSS feeds.'
+    help = 'Fetches news items from all active NewsSource objects.'
 
     def handle(self, *args, **kwargs):
-        """
-        The main logic of the command.
-        """
-        self.stdout.write(self.style.SUCCESS('Starting news fetch process...'))
+        self.stdout.write("Starting news fetch process...")
         
         sources = NewsSource.objects.all()
-        if not sources:
-            self.stdout.write(self.style.WARNING('No news sources found in the database. Please add some via the admin panel.'))
-            return
+        created_count = 0
+        updated_count = 0
 
-        total_new_items = 0
         for source in sources:
-            self.stdout.write(f'Fetching news from: {source.name}')
-            
-            # Parse RSS feed URL
             feed = feedparser.parse(source.rss_url)
 
-            items_from_this_source = 0
             for entry in feed.entries:
-                # Check if news item exists, avoid duplicates
-                if NewsItem.objects.filter(link=entry.link).exists():
-                    continue
-
-                # Parse publication date
-                published_date = timezone.now() # Default if it fails
-                if hasattr(entry, 'published'):
+                published_time = timezone.now() # Default value
+                if hasattr(entry, 'published_parsed') and entry.published_parsed:
                     try:
-                        published_date = date_parser.parse(entry.published)
-                    except date_parser.ParserError:
-                        self.stdout.write(self.style.WARNING(f"Could not parse date '{entry.published}' for item '{entry.title}'"))
+                        # Attempt to parse the date
+                        published_time = parser.parse(entry.published)
+                        if published_time.tzinfo is None:
+                            published_time = timezone.make_aware(published_time, timezone.get_default_timezone())
+                    except (parser.ParserError, TypeError):
+                        # If parsing fails, keep the default 'now'
+                        self.stdout.write(self.style.WARNING(f"Could not parse date for entry: {entry.link}"))
+                        pass
                 
-                # Create NewsItem object
-                try:
-                    NewsItem.objects.create(
-                        title=entry.title,
-                        link=entry.link,
-                        summary=entry.get('summary', ''), 
-                        published_date=published_date,
-                        source=source,
-                        category=source.category
-                    )
-                    items_from_this_source += 1
-                except Exception as e:
-                    self.stdout.write(self.style.ERROR(f"Error saving item '{entry.title}': {e}"))
+                # Use update_or_create to avoid duplicates
+                news_item, created = NewsItem.objects.update_or_create(
+                    link=entry.link,
+                    defaults={
+                        'title': entry.title,
+                        'summary': entry.summary,
+                        'published_date': published_time,
+                        'source': source,
+                        'category': source.category
+                    }
+                )
 
-            if items_from_this_source > 0:
-                self.stdout.write(self.style.SUCCESS(f'--> Found and saved {items_from_this_source} new items from {source.name}'))
-                total_new_items += items_from_this_source
-            
-            # Update last_fetched timestamp for source
+                if created:
+                    created_count += 1
+                else:
+                    updated_count += 1
+
             source.last_fetched = timezone.now()
             source.save()
-
-        self.stdout.write(self.style.SUCCESS(f'\nNews fetch process complete. Total new items saved: {total_new_items}'))
+        
+        # A single summary line at the end
+        summary_message = f"News fetch process finished. Created: {created_count}, Updated: {updated_count}."
+        self.stdout.write(self.style.SUCCESS(summary_message))

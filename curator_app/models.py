@@ -51,12 +51,13 @@ class NewsItem(models.Model):
 class AiTool(models.Model):
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField()
+    image_url = models.URLField(blank=True, null=True, help_text="URL for a logo or promotional image.") # <-- ADD THIS LINE
     link = models.URLField(help_text="Link to the tool's official website or page.")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="ai_tools")
     documentation_link = models.URLField(blank=True, null=True)
     tutorial_link = models.URLField(blank=True, null=True)
     added_date = models.DateTimeField(default=timezone.now)
-
+    
     # Predefined question for Perplexity API about the tool
     perplexity_query = models.CharField(
         max_length=500,
